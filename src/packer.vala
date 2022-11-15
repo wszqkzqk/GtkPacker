@@ -1,4 +1,4 @@
-/* window.vala
+/* packer.vala
  *
  * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@qq.com>
  *
