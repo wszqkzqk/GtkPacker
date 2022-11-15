@@ -1,6 +1,6 @@
 /* application.vala
  *
- * Copyright 2022 周乾康
+ * Copyright 2022 wszqkzqk(周乾康)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,13 +45,13 @@ namespace Gtkpacker {
         }
 
         private void on_about_action () {
-            string[] authors = { "周乾康" };
+            string[] authors = { "wszqkzqk(周乾康)" };
             Gtk.show_about_dialog (this.active_window,
                                    "program-name", "gtkpacker",
                                    "logo-icon-name", "dev.wszqkzqk.gtkpacker",
                                    "authors", authors,
                                    "version", "0.1.0",
-                                   "copyright", "© 2022 周乾康");
+                                   "copyright", "© 2022 wszqkzqk(周乾康)");
         }
 
         private void on_preferences_action () {
