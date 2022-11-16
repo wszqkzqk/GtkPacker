@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="GtkpackerWindow" parent="GtkApplicationWindow">
+  <template class="GtkPackerWindow" parent="GtkApplicationWindow">
     <property name="default-width">600</property>
     <property name="default-height">300</property>
     <child type="titlebar">
