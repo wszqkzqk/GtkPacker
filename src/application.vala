@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */
 
-namespace Gtkpacker {
+namespace GtkPacker {
     public class Application : Gtk.Application {
         public Application () {
             Object (application_id: "dev.wszqkzqk.gtkpacker", flags: ApplicationFlags.FLAGS_NONE);
@@ -39,7 +39,7 @@ namespace Gtkpacker {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                win = new Gtkpacker.Window (this);
+                win = new GtkPacker.Window (this);
             }
             win.present ();
         }

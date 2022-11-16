@@ -19,8 +19,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */
 
-namespace Gtkpacker {
-    public class GtkPacker : Object {
+namespace GtkPacker {
+    public class Packer : Object {
         public string file_path;
         public string outdir;
         string mingw_path = null;
@@ -28,7 +28,7 @@ namespace Gtkpacker {
         static Regex msys2_dep_regex {get; default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/;}
         Gee.HashSet<string> dependencies = new Gee.HashSet<string> ();
     
-        public GtkPacker (string file_path, string outdir) {
+        public Packer (string file_path, string outdir) {
             this.file_path = clean_path (file_path);
             this.outdir = clean_path (outdir);
         }

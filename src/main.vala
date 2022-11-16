@@ -20,6 +20,6 @@
  */
 
 int main (string[] args) {
-    var app = new Gtkpacker.Application ();
+    var app = new GtkPacker.Application ();
     return app.run (args);
 }

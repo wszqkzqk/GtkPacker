@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */
 
-namespace Gtkpacker {
+namespace GtkPacker {
     [GtkTemplate (ui = "/dev/wszqkzqk/gtkpacker/window.ui")]
     public class Window : Gtk.ApplicationWindow {
         [GtkChild]
