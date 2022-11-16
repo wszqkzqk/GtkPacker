@@ -7,7 +7,11 @@ project('gtkpacker', ['c', 'vala'],
 i18n = import('i18n')
 gnome = import('gnome')
 
-
+gtk4 =   dependency('gtk4')
+gee = dependency('gee-0.8')
+gio = dependency('gio-2.0')
+glib = dependency('glib-2.0')
+gobject = dependency('gobject-2.0')
 
 subdir('data')
 subdir('src')
