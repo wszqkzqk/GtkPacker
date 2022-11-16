@@ -1,18 +1,6 @@
 {
     "configurations": [
         {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/usr/include/**",
-                "/usr/lib/glib-2.0/include/**"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/gcc",
-            "cppStandard": "gnu++20",
-            "cStandard": "gnu17"
-        },
-        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
@@ -28,6 +16,19 @@
             "cppStandard": "gnu++20",
             "intelliSenseMode": "windows-gcc-x64",
             "compilerPath": "D:\\msys64\\ucrt64\\bin\\gcc.exe"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/include/**",
+                "/usr/lib/glib-2.0/include/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++20",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

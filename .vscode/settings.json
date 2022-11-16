@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "glib-object.h": "c",
+        "glib.h": "c",
+        "async.h": "c",
+        "gee.h": "c",
+        "string.h": "c",
+        "hiredis.h": "c",
+        "float.h": "c",
+        "stdio.h": "c",
+        "gtk.h": "c",
+        "locale.h": "c",
+        "gstdio.h": "c",
+        "stdlib.h": "c",
+        "*.ipp": "c",
+        "optional": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "variant": "c"
+    }
+}
