@@ -27,6 +27,7 @@ namespace GtkPacker {
 
         public Window (Gtk.Application app) {
             Object (application: app);
+            this.title = "GtkPacker";
         }
     }
 }
