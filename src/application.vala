@@ -39,7 +39,7 @@ namespace GtkPacker {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                win = new GtkPacker.Window (this);
+                win = new Window (this);
             }
             win.present ();
         }

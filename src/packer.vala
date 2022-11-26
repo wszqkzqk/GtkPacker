@@ -37,7 +37,7 @@ namespace GtkPacker {
 
             Process.spawn_command_line_sync (@"ntldd -R '$(this.file_path)'", out deps_info);
             var bin_path = Path.build_path (Path.DIR_SEPARATOR_S, this.outdir, "bin");
-            DirUtils.create_with_parents (bin_path, 644);
+            DirUtils.create_with_parents (bin_path, 0644);
             
             var file = File.new_for_path (this.file_path);
             var target = File.new_for_path (Path.build_path (Path.DIR_SEPARATOR_S, bin_path, file.get_basename ()));
@@ -45,8 +45,7 @@ namespace GtkPacker {
             
             var deps_info_array = deps_info.split ("\n");
             foreach (var i in deps_info_array) {
-                var j = i.strip ();
-                var item = j.split (" ");
+                var item = (i.strip ()).split (" ");
                 if ((item.length == 4) && (!(item[0] in this.dependencies))) {
                     bool condition;
                     if (this.mingw_path == null) {
@@ -71,7 +70,7 @@ namespace GtkPacker {
             if ( src_type == FileType.DIRECTORY ) {
                 string src_path = src.get_path ();
                 string dest_path = dest.get_path ();
-                DirUtils.create_with_parents(dest_path, 644);
+                DirUtils.create_with_parents(dest_path, 0644);
                 src.copy_attributes (dest, flags, cancellable);
             
                 FileEnumerator enumerator = src.enumerate_children (FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE, cancellable);
