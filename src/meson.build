@@ -7,7 +7,6 @@ gtkpacker_sources = [
 
 gtkpacker_deps = [
   gtk4,
-  gee,
   glib,
   gio,
   gobject

@@ -25,16 +25,16 @@ namespace GtkPacker {
         public string outdir;
         string mingw_path = null;
         static Regex msys2_dep_regex {get; default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/;}
-        Gee.HashSet<string> dependencies = new Gee.HashSet<string> ();
-
+        GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
+    
         public GtkPacker (string file_path, string outdir) {
             this.file_path = file_path;
             this.outdir = outdir;
         }
-
+    
         void copy_bin_files () {
             string deps_info;
-
+    
             Process.spawn_command_line_sync (@"ntldd -R '$(this.file_path)'", out deps_info);
             var bin_path = Path.build_path (Path.DIR_SEPARATOR_S, this.outdir, "bin");
             DirUtils.create_with_parents (bin_path, 0644);
@@ -64,31 +64,31 @@ namespace GtkPacker {
                 }
             }
         }
-
+    
         static bool copy_recursive (File src, File dest, FileCopyFlags flags = FileCopyFlags.NONE, Cancellable? cancellable = null) throws Error {
             FileType src_type = src.query_file_type (FileQueryInfoFlags.NONE, cancellable);
-            if ( src_type == FileType.DIRECTORY ) {
+            if (src_type == FileType.DIRECTORY) {
                 string src_path = src.get_path ();
                 string dest_path = dest.get_path ();
                 DirUtils.create_with_parents(dest_path, 0644);
                 src.copy_attributes (dest, flags, cancellable);
             
                 FileEnumerator enumerator = src.enumerate_children (FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE, cancellable);
-                for ( FileInfo? info = enumerator.next_file (cancellable) ; info != null ; info = enumerator.next_file (cancellable) ) {
+                for (FileInfo? info = enumerator.next_file (cancellable) ; info != null ; info = enumerator.next_file (cancellable)) {
                     copy_recursive (
                     File.new_for_path (Path.build_filename (src_path, info.get_name ())),
                     File.new_for_path (Path.build_filename (dest_path, info.get_name ())),
                     flags,
                     cancellable);
                 }
-            } else if ( src_type == FileType.REGULAR ) {
+            } else if (src_type == FileType.REGULAR) {
                 src.copy (dest, flags, cancellable);
             }
-        
+          
             return true;
         }
-
-        void copy_resources() {
+    
+        inline void copy_resources() {
             string[] resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
@@ -96,7 +96,7 @@ namespace GtkPacker {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "lib", "gdk-pixbuf-2.0")
             };
-
+    
             if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
                 foreach (var item in resources) {
                     var resource = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.mingw_path, item));
@@ -105,8 +105,8 @@ namespace GtkPacker {
                 }
             }
         }
-
-        public void run () {
+    
+        public inline void run () {
             this.copy_bin_files ();
             this.copy_resources ();
         }
