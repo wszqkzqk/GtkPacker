@@ -1,6 +1,6 @@
 /* main.vala
  *
- * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@qq.com>
+ * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,11 @@
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */
+
+/* Configs for vala
+ * const to use, define in C's `-D` arguement
+ */
+extern const string GETTEXT_PACKAGE;
 
 int main (string[] args) {
     var app = new GtkPacker.Application ();

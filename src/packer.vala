@@ -1,6 +1,6 @@
 /* packer.vala
  *
- * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@qq.com>
+ * Copyright 2022-2023 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,7 @@ namespace GtkPacker {
             this.outdir = outdir;
         }
     
-        void copy_bin_files () {
+        void copy_bin_files () throws Error {
             string deps_info;
     
             Process.spawn_command_line_sync (@"ntldd -R '$(this.file_path)'", out deps_info);
@@ -88,7 +88,7 @@ namespace GtkPacker {
             return true;
         }
     
-        inline void copy_resources() {
+        inline void copy_resources() throws Error {
             string[] resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
@@ -106,7 +106,7 @@ namespace GtkPacker {
             }
         }
     
-        public inline void run () {
+        public inline void run () throws Error {
             this.copy_bin_files ();
             this.copy_resources ();
         }

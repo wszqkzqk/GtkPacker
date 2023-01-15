@@ -1,6 +1,6 @@
 /* application.vala
  *
- * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@qq.com>
+ * Copyright 2022-2023 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ namespace GtkPacker {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                win = new Window (this);
+                win = new MainWindow (this);
             }
             win.present ();
         }
@@ -50,8 +50,8 @@ namespace GtkPacker {
                                    "program-name", "gtkpacker",
                                    "logo-icon-name", "dev.wszqkzqk.gtkpacker",
                                    "authors", authors,
-                                   "version", "0.1.0",
-                                   "copyright", "© 2022 wszqkzqk (周乾康) <wszqkzqk@qq.com>");
+                                   "version", VERSION,
+                                   "copyright", "© 2022-2023 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>");
         }
 
         private void on_preferences_action () {

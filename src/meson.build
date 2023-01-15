@@ -1,15 +1,23 @@
+version_file = vcs_tag(
+   command: ['git', 'describe', '--tags'],
+     input: 'version.vala.in',
+    output: 'version.vala'
+)
+
 gtkpacker_sources = [
   'main.vala',
   'application.vala',
-  'window.vala',
-  'packer.vala'
+  'mainwindow.vala',
+  'packer.vala',
+  version_file
 ]
 
 gtkpacker_deps = [
   gtk4,
   glib,
   gio,
-  gobject
+  gobject,
+  meson.get_compiler('c').find_library('m', required: false)
 ]
 
 gtkpacker_sources += gnome.compile_resources('gtkpacker-resources',
