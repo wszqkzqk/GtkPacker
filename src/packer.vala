@@ -44,7 +44,7 @@ namespace GtkPacker {
             file.copy (target, FileCopyFlags.OVERWRITE);
             
             var deps_info_array = deps_info.split ("\n");
-            foreach (var i in deps_info_array) {
+            foreach (unowned var i in deps_info_array) {
                 var item = (i.strip ()).split (" ");
                 if ((item.length == 4) && (!(item[0] in this.dependencies))) {
                     bool condition;
@@ -98,7 +98,7 @@ namespace GtkPacker {
             };
     
             if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
-                foreach (var item in resources) {
+                foreach (unowned var item in resources) {
                     var resource = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.mingw_path, item));
                     var target = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.outdir, item));
                     copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
