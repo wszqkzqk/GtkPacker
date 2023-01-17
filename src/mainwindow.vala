@@ -22,11 +22,9 @@
 namespace GtkPacker {
     public class MainWindow : Gtk.ApplicationWindow {
         public File exec_file {get; set;}
-        protected string _exec_file_path;
         public string exec_file_path {
-            get {
-                _exec_file_path = exec_file.get_path ();
-                return _exec_file_path;
+            owned get {
+                return exec_file.get_path ();
             }
         }
 
@@ -87,6 +85,12 @@ namespace GtkPacker {
                     box_line1.append (file_button);
                 }
                 box.append (box_line1);
+
+                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 2);
+                {
+
+                }
+                box.append (box_line2);
             }
             this.child = box;
         }
