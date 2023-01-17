@@ -21,12 +21,20 @@
 
 namespace GtkPacker {
     public class MainWindow : Gtk.ApplicationWindow {
+        public File exec_file {get; set;}
+        protected string _exec_file_path;
+        public string exec_file_path {
+            get {
+                _exec_file_path = exec_file.get_path ();
+                return _exec_file_path;
+            }
+        }
 
         public MainWindow (Gtk.Application app) {
-            Object (application: app);
-            title = "GtkPacker";
-            default_width = -1;
-            default_height = -1;
+            Object (
+                application: app,
+                title: _("GtkPacker")
+            );
 
             /* Use block to show containment relationship */
 
@@ -48,8 +56,39 @@ namespace GtkPacker {
             }
             this.titlebar = header_bar;
 
-            // A box to contain more than one widgets
-            //var box = new Gtk.Box ();
+            // A VERTICAL box to contain more than one widgets
+            var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 4);
+            {   // Each line of the VERTICAL box
+                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 2);
+                {   // A label and a filechooserbutton
+                    var label = new Gtk.Label (_("File Path:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line1.append (label);
+
+                    var file_button = new Gtk.Button.with_label ("...");
+                    file_button.clicked.connect (() => {
+                        var file_chooser = new Gtk.FileChooserNative (
+                            null,
+                            this,
+                            Gtk.FileChooserAction.OPEN,
+                            null,
+                            null
+                        );
+                        file_chooser.response.connect ((a) => {
+                            if (a == Gtk.ResponseType.ACCEPT) {
+                                exec_file = file_chooser.get_file ();
+                                file_button.label = Path.get_basename (exec_file.get_path ());
+                            }
+                        });
+                        file_chooser.show ();
+                    });
+                    box_line1.append (file_button);
+                }
+                box.append (box_line1);
+            }
+            this.child = box;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace GtkPacker {
         private void on_about_action () {
             string[] authors = { "wszqkzqk (周乾康)" };
             Gtk.show_about_dialog (this.active_window,
-                                   "program-name", "gtkpacker",
+                                   "program-name", _("GtkPacker"),
                                    "logo-icon-name", "dev.wszqkzqk.gtkpacker",
                                    "authors", authors,
                                    "version", VERSION,
