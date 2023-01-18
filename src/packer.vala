@@ -45,7 +45,7 @@ namespace GtkPacker {
             
             var deps_info_array = deps_info.split ("\n");
             foreach (unowned var i in deps_info_array) {
-                var item = (i.strip ()).split (" ");
+                var item = (i._strip ()).split (" ");
                 if ((item.length == 4) && (!(item[0] in this.dependencies))) {
                     bool condition;
                     if (this.mingw_path == null) {
@@ -96,7 +96,7 @@ namespace GtkPacker {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "lib", "gdk-pixbuf-2.0")
             };
-    
+
             if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
                 foreach (unowned var item in resources) {
                     var resource = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.mingw_path, item));
