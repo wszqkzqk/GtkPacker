@@ -22,7 +22,7 @@
 namespace GtkPacker {
     public class Application : Gtk.Application {
         public Application () {
-            Object (application_id: "dev.wszqkzqk.gtkpacker", flags: ApplicationFlags.FLAGS_NONE);
+            Object (application_id: "com.github.wszqkzqk.gtkpacker", flags: ApplicationFlags.FLAGS_NONE);
         }
 
         construct {
