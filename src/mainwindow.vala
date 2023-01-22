@@ -148,8 +148,15 @@ namespace GtkPacker {
                                 packer.run ();
                             } catch (Error e) {
                                 critical (e.message);
-                                var error_win = new Gtk.Window ();
-                                var error_label = new Gtk.Label (e.message);
+                                var error_win = new Gtk.Window () {
+                                    title = _("Error")
+                                };
+                                var error_label = new Gtk.Label (e.message) {
+                                    margin_top = 30,
+                                    margin_bottom = 30,
+                                    margin_start = 10,
+                                    margin_end = 10
+                                };
                                 error_win.child = error_label;
                                 error_win.present ();
                             }
