@@ -21,10 +21,16 @@
 
 namespace GtkPacker {
     public class MainWindow : Gtk.ApplicationWindow {
-        public File exec_file {get; set;}
-        public string exec_file_path {
+        public File? exec_file {get; set;}
+        public string? exec_file_path {
             owned get {
-                return exec_file.get_path ();
+                return (exec_file == null) ? null : exec_file.get_path ();
+            }
+        }
+        public File? output_dir {get; set;}
+        public string? output_dir_path {
+            owned get {
+                return (output_dir == null) ? null : output_dir.get_path ();
             }
         }
 
@@ -55,9 +61,15 @@ namespace GtkPacker {
             this.titlebar = header_bar;
 
             // A VERTICAL box to contain more than one widgets
-            var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 4);
+            var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
+                margin_start = 30,
+                margin_end = 30
+            };
             {   // Each line of the VERTICAL box
-                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 2);
+                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10
+                };
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("File Path:")) {
                         hexpand = true,
@@ -65,7 +77,7 @@ namespace GtkPacker {
                     };
                     box_line1.append (label);
 
-                    var file_button = new Gtk.Button.with_label ("...");
+                    var file_button = new Gtk.Button.with_label ("   ......   ");
                     file_button.clicked.connect (() => {
                         var file_chooser = new Gtk.FileChooserNative (
                             null,
@@ -86,11 +98,66 @@ namespace GtkPacker {
                 }
                 box.append (box_line1);
 
-                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 2);
+                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10
+                };
                 {
+                    // A label and a filechooserbutton
+                    var label = new Gtk.Label (_("Copy to:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line2.append (label);
 
+                    var file_button = new Gtk.Button.with_label ("   ......   ");
+                    file_button.clicked.connect (() => {
+                        var file_chooser = new Gtk.FileChooserNative (
+                            null,
+                            this,
+                            Gtk.FileChooserAction.SELECT_FOLDER,
+                            null,
+                            null
+                        );
+                        file_chooser.response.connect ((a) => {
+                            if (a == Gtk.ResponseType.ACCEPT) {
+                                output_dir = file_chooser.get_file ();
+                                file_button.label = Path.get_basename (output_dir.get_path ());
+                            }
+                        });
+                        file_chooser.show ();
+                    });
+                    box_line2.append (file_button);
                 }
                 box.append (box_line2);
+
+                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10,
+                    halign = Gtk.Align.CENTER
+                };
+                {   // Confirm Button
+                    var button = new Gtk.Button.with_label (_("Confirm"));
+                    {
+                        button.clicked.connect (() => {
+                            if (exec_file_path == null || output_dir_path == null) {
+                                return;
+                            }
+                            var packer = new GtkPacker (exec_file_path, output_dir_path);
+                            try {
+                                packer.run ();
+                            } catch (Error e) {
+                                critical (e.message);
+                                var error_win = new Gtk.Window ();
+                                var error_label = new Gtk.Label (e.message);
+                                error_win.child = error_label;
+                                error_win.present ();
+                            }
+                        });
+                    }
+                    box_line3.append (button);
+                }
+                box.append (box_line3);
             }
             this.child = box;
         }
