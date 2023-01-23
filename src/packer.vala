@@ -20,7 +20,7 @@
  */
 
 namespace GtkPacker {
-    public class GtkPacker : Object {
+    public class GtkPacker {
         public string file_path;
         public string outdir;
         string mingw_path = null;
@@ -77,7 +77,7 @@ namespace GtkPacker {
             if (src_type == FileType.DIRECTORY) {
                 string src_path = src.get_path ();
                 string dest_path = dest.get_path ();
-                DirUtils.create_with_parents(dest_path, 0644);
+                DirUtils.create_with_parents (dest_path, 0644);
                 src.copy_attributes (dest, flags, cancellable);
             
                 FileEnumerator enumerator = src.enumerate_children (FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE, cancellable);
@@ -91,7 +91,7 @@ namespace GtkPacker {
             } else if (src_type == FileType.REGULAR) {
                 src.copy (dest, flags, cancellable);
             }
-          
+
             return true;
         }
     
@@ -150,9 +150,33 @@ namespace GtkPacker {
             }
         }
 
-        inline void copy_locale () throws Error  {
+        static void copy_regex_match (File src, File dest, Regex re, FileCopyFlags flags = FileCopyFlags.NONE, Cancellable? cancellable = null) throws Error {
+            FileType src_type = src.query_file_type (FileQueryInfoFlags.NONE, cancellable);
+            string src_path = src.get_path ();
+            if (src_type == FileType.DIRECTORY) {
+                string dest_path = dest.get_path ();
+                FileEnumerator enumerator = src.enumerate_children (FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE, cancellable);
+                for (FileInfo? info = enumerator.next_file (cancellable) ; info != null ; info = enumerator.next_file (cancellable)) {
+                    copy_regex_match (
+                    File.new_for_path (Path.build_filename (src_path, info.get_name ())),
+                    File.new_for_path (Path.build_filename (dest_path, info.get_name ())),
+                    re,
+                    flags,
+                    cancellable);
+                }
+            } else if (src_type == FileType.REGULAR && re.match (src_path)) {
+                var dest_parent = dest.get_parent ();
+                if (dest_parent.query_file_type (FileQueryInfoFlags.NONE, cancellable) != FileType.DIRECTORY) {
+                    DirUtils.create_with_parents (dest_parent.get_path (), 0644);
+                    (src.get_parent ()).copy_attributes (dest_parent, flags, cancellable);
+                }
+                src.copy (dest, flags, cancellable);
+            }
+        }
+
+        inline void copy_locale () throws Error {
             var resource = File.new_for_path (
-                Path.build_path(
+                Path.build_path (
                     Path.DIR_SEPARATOR_S,
                     this.mingw_path,
                     "share",
@@ -167,6 +191,13 @@ namespace GtkPacker {
                     "locale"
                 )
             );
+            Regex re;
+            if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
+                re = /.*(gtk[^\\\/]*\.mo|glib20.mo)/;
+            } else {
+                re = /.*glib20.mo/;
+            }
+            copy_regex_match (resource, target, re, FileCopyFlags.OVERWRITE);
         }
 
         public inline void run () throws Error {
