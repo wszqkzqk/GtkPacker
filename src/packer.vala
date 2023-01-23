@@ -150,7 +150,7 @@ namespace GtkPacker {
             }
         }
 
-        static void copy_regex_match (File src, File dest, Regex re, FileCopyFlags flags = FileCopyFlags.NONE, Cancellable? cancellable = null) throws Error {
+        static void copy_regex_match (File src, File dest, Regex re, bool reverse = false, FileCopyFlags flags = FileCopyFlags.NONE, Cancellable? cancellable = null) throws Error {
             FileType src_type = src.query_file_type (FileQueryInfoFlags.NONE, cancellable);
             string src_path = src.get_path ();
             if (src_type == FileType.DIRECTORY) {
@@ -161,10 +161,12 @@ namespace GtkPacker {
                     File.new_for_path (Path.build_filename (src_path, info.get_name ())),
                     File.new_for_path (Path.build_filename (dest_path, info.get_name ())),
                     re,
+                    reverse,
                     flags,
                     cancellable);
                 }
-            } else if (src_type == FileType.REGULAR && re.match (src_path)) {
+            } else if (src_type == FileType.REGULAR
+            && ((reverse) ? (!re.match (src_path)) : re.match (src_path))) {
                 var dest_parent = dest.get_parent ();
                 if (dest_parent.query_file_type (FileQueryInfoFlags.NONE, cancellable) != FileType.DIRECTORY) {
                     DirUtils.create_with_parents (dest_parent.get_path (), 0644);
@@ -197,7 +199,7 @@ namespace GtkPacker {
             } else {
                 re = /.*glib20.mo/;
             }
-            copy_regex_match (resource, target, re, FileCopyFlags.OVERWRITE);
+            copy_regex_match (resource, target, re, false, FileCopyFlags.OVERWRITE);
         }
 
         public inline void run () throws Error {
