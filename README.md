@@ -20,6 +20,14 @@
   * `meson`
   * `ninja`
 
+#### Environment Installation
+
+Confirm your MSYS2 environment and install related packages, for example, `UCRT64`:
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-gtk4 mingw-w64-ucrt-x86_64-ntldd mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-vala mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja
+```
+
 ### Setup, Compile and Install
 
 Clone this repo:
