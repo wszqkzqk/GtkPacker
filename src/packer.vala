@@ -24,12 +24,19 @@ namespace GtkPacker {
         public string file_path;
         public string outdir;
         string mingw_path = null;
-        static Regex msys2_dep_regex {get; default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/;}
+        static Regex msys2_dep_regex {
+            get;
+            default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/;
+        }
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
+        bool always_copy_themes;
+        bool copy_locale_files;
     
-        public GtkPacker (string file_path, string outdir) {
+        public GtkPacker (string file_path, string outdir, bool always_copy_themes, bool copy_locale_files) {
             this.file_path = file_path;
             this.outdir = outdir;
+            this.always_copy_themes = always_copy_themes;
+            this.copy_locale_files = copy_locale_files;
         }
     
         void copy_bin_files () throws Error {
@@ -88,27 +95,78 @@ namespace GtkPacker {
             return true;
         }
     
-        inline void copy_resources() throws Error {
+        inline void copy_resources () throws Error {
             string[] resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "glib-2.0", "schemas"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons"),
+                // Keep to the last item
                 Path.build_path (Path.DIR_SEPARATOR_S, "lib", "gdk-pixbuf-2.0")
             };
 
-            if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
+            if (always_copy_themes || "libgtk-3-0.dll" in this.dependencies) {
                 foreach (unowned var item in resources) {
-                    var resource = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.mingw_path, item));
-                    var target = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, this.outdir, item));
+                    var resource = File.new_for_path (
+                        Path.build_path (
+                            Path.DIR_SEPARATOR_S,
+                            this.mingw_path,
+                            item
+                        )
+                    );
+                    var target = File.new_for_path (
+                        Path.build_path (
+                            Path.DIR_SEPARATOR_S,
+                            this.outdir,
+                            item
+                        )
+                    );
                     copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
                 }
+            } else if ("libgtk-4-1.dll" in this.dependencies) {
+                var resource = File.new_for_path (
+                    Path.build_path (
+                        Path.DIR_SEPARATOR_S,
+                        this.mingw_path,
+                        resources[resources.length - 1]
+                    )
+                );
+                var target = File.new_for_path (
+                    Path.build_path (
+                        Path.DIR_SEPARATOR_S,
+                        this.outdir,
+                        resources[resources.length - 1]
+                    )
+                );
+                copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
             }
         }
-    
+
+        inline void copy_locale () throws Error  {
+            var resource = File.new_for_path (
+                Path.build_path(
+                    Path.DIR_SEPARATOR_S,
+                    this.mingw_path,
+                    "share",
+                    "locale"
+                )
+            );
+            var target = File.new_for_path (
+                Path.build_path (
+                    Path.DIR_SEPARATOR_S,
+                    this.outdir,
+                    "share",
+                    "locale"
+                )
+            );
+        }
+
         public inline void run () throws Error {
             this.copy_bin_files ();
             this.copy_resources ();
+            if (copy_locale_files) {
+                copy_locale ();
+            }
         }
     }
 }

@@ -33,6 +33,8 @@ namespace GtkPacker {
                 return (output_dir == null) ? null : output_dir.get_path ();
             }
         }
+        bool always_copy_themes = false;
+        bool copy_locale_files = true;
 
         public MainWindow (Gtk.Application app) {
             Object (
@@ -71,7 +73,7 @@ namespace GtkPacker {
                     margin_bottom = 10
                 };
                 {   // A label and a filechooserbutton
-                    var label = new Gtk.Label (_("File Path:")) {
+                    var label = new Gtk.Label (_("File path:")) {
                         hexpand = true,
                         halign = Gtk.Align.START
                     };
@@ -92,6 +94,9 @@ namespace GtkPacker {
                                 file_button.label = Path.get_basename (exec_file.get_path ());
                             }
                         });
+                        var filter = new Gtk.FileFilter ();
+                        filter.add_pattern ("*.exe");
+                        file_chooser.filter = filter;
                         file_chooser.show ();
                     });
                     box_line1.append (file_button);
@@ -102,8 +107,7 @@ namespace GtkPacker {
                     margin_top = 10,
                     margin_bottom = 10
                 };
-                {
-                    // A label and a filechooserbutton
+                {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("Copy to:")) {
                         hexpand = true,
                         halign = Gtk.Align.START
@@ -134,6 +138,52 @@ namespace GtkPacker {
                 var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
                     margin_top = 10,
                     margin_bottom = 10,
+                };
+                {   // A label and a switch ABOUT THEME FILES
+                    // ALWAYS COPY THEME FILES
+                    var label = new Gtk.Label (_("Always copy theme files:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line3.append (label);
+
+                    var switch_button = new Gtk.Switch () {
+                        state = always_copy_themes
+                    };
+                    switch_button.state_set.connect (() => {
+                        always_copy_themes = switch_button.state = !switch_button.state;
+                        return true;
+                    });
+                    box_line3.append (switch_button);
+                }
+                box.append (box_line3);
+
+                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10,
+                };
+                {   // A label and a switch ABOUT I18N
+                    // Whether to copy locale files
+                    var label = new Gtk.Label (_("Copy locale files:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line4.append (label);
+
+                    var switch_button = new Gtk.Switch () {
+                        state = copy_locale_files
+                    };
+                    switch_button.state_set.connect (() => {
+                        copy_locale_files = switch_button.state = !switch_button.state;
+                        return true;
+                    });
+                    box_line4.append (switch_button);
+                }
+                box.append (box_line4);
+
+                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10,
                     halign = Gtk.Align.CENTER
                 };
                 {   // Confirm Button
@@ -143,7 +193,12 @@ namespace GtkPacker {
                             if (exec_file_path == null || output_dir_path == null) {
                                 return;
                             }
-                            var packer = new GtkPacker (exec_file_path, output_dir_path);
+                            var packer = new GtkPacker (
+                                exec_file_path,
+                                output_dir_path,
+                                always_copy_themes,
+                                copy_locale_files
+                            );
                             try {
                                 packer.run ();
                             } catch (Error e) {
@@ -162,9 +217,9 @@ namespace GtkPacker {
                             }
                         });
                     }
-                    box_line3.append (button);
+                    box_last.append (button);
                 }
-                box.append (box_line3);
+                box.append (box_last);
             }
             this.child = box;
         }
