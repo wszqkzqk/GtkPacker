@@ -201,6 +201,17 @@ namespace GtkPacker {
                             );
                             try {
                                 packer.run ();
+                                var done_win = new Gtk.Window () {
+                                    title = _("Done")
+                                };
+                                var done_label = new Gtk.Label ("Done!") {
+                                    margin_top = 30,
+                                    margin_bottom = 30,
+                                    margin_start = 10,
+                                    margin_end = 10
+                                };
+                                done_win.child = done_label;
+                                done_win.present ();
                             } catch (Error e) {
                                 critical (e.message);
                                 var error_win = new Gtk.Window () {
