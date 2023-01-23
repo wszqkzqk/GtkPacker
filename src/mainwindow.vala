@@ -202,7 +202,8 @@ namespace GtkPacker {
                             try {
                                 packer.run ();
                                 var done_win = new Gtk.Window () {
-                                    title = _("Done")
+                                    title = _("Done"),
+                                    transient_for = this
                                 };
                                 var done_label = new Gtk.Label (_("Done!")) {
                                     margin_top = 30,
@@ -215,7 +216,8 @@ namespace GtkPacker {
                             } catch (Error e) {
                                 critical (e.message);
                                 var error_win = new Gtk.Window () {
-                                    title = _("Error")
+                                    title = _("Error"),
+                                    transient_for = this
                                 };
                                 var error_label = new Gtk.Label (e.message) {
                                     margin_top = 30,

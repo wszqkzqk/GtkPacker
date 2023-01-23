@@ -96,17 +96,41 @@ namespace GtkPacker {
         }
     
         inline void copy_resources () throws Error {
-            string[] resources = {
+            string[] gtk3_only_resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
+                Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons")
+            };
+
+            string[] gtk_resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "glib-2.0", "schemas"),
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons"),
-                // Keep to the last item
                 Path.build_path (Path.DIR_SEPARATOR_S, "lib", "gdk-pixbuf-2.0")
             };
 
-            if (always_copy_themes || "libgtk-3-0.dll" in this.dependencies) {
-                foreach (unowned var item in resources) {
+            if (always_copy_themes
+            || "libgtk-3-0.dll" in this.dependencies
+            || "libgtk-4-1.dll" in this.dependencies) {
+                if (always_copy_themes || "libgtk-3-0.dll" in this.dependencies) {
+                    foreach (unowned var item in gtk3_only_resources) {
+                        var resource = File.new_for_path (
+                            Path.build_path (
+                                Path.DIR_SEPARATOR_S,
+                                this.mingw_path,
+                                item
+                            )
+                        );
+                        var target = File.new_for_path (
+                            Path.build_path (
+                                Path.DIR_SEPARATOR_S,
+                                this.outdir,
+                                item
+                            )
+                        );
+                        copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
+                    }
+                }
+
+                foreach (unowned var item in gtk_resources) {
                     var resource = File.new_for_path (
                         Path.build_path (
                             Path.DIR_SEPARATOR_S,
@@ -123,22 +147,6 @@ namespace GtkPacker {
                     );
                     copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
                 }
-            } else if ("libgtk-4-1.dll" in this.dependencies) {
-                var resource = File.new_for_path (
-                    Path.build_path (
-                        Path.DIR_SEPARATOR_S,
-                        this.mingw_path,
-                        resources[resources.length - 1]
-                    )
-                );
-                var target = File.new_for_path (
-                    Path.build_path (
-                        Path.DIR_SEPARATOR_S,
-                        this.outdir,
-                        resources[resources.length - 1]
-                    )
-                );
-                copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
             }
         }
 

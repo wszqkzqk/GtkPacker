@@ -28,4 +28,5 @@ gtkpacker_sources += gnome.compile_resources('gtkpacker-resources',
 executable('gtkpacker', gtkpacker_sources,
   dependencies: gtkpacker_deps,
        install: true,
+ win_subsystem: 'windows'
 )
