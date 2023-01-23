@@ -194,7 +194,9 @@ namespace GtkPacker {
                 )
             );
             Regex re;
-            if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
+            if ("libadwaita-1-0.dll" in this.dependencies) {
+                re = /.*(gtk[^\\\/]*\.mo|glib20.mo|libadwaita.mo)/;
+            } else if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
                 re = /.*(gtk[^\\\/]*\.mo|glib20.mo)/;
             } else {
                 re = /.*glib20.mo/;
