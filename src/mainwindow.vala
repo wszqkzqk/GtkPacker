@@ -204,7 +204,7 @@ namespace GtkPacker {
                                 var done_win = new Gtk.Window () {
                                     title = _("Done")
                                 };
-                                var done_label = new Gtk.Label ("Done!") {
+                                var done_label = new Gtk.Label (_("Done!")) {
                                     margin_top = 30,
                                     margin_bottom = 30,
                                     margin_start = 10,
