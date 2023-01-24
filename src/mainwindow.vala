@@ -181,6 +181,15 @@ namespace GtkPacker {
                 }
                 box.append (box_line4);
 
+                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 10,
+                    margin_bottom = 10,
+                };
+                {
+
+                }
+                box.append (box_line5);
+
                 var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
                     margin_top = 10,
                     margin_bottom = 10,

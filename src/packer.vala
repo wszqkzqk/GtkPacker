@@ -28,6 +28,7 @@ namespace GtkPacker {
             get;
             default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/i;
         }
+        string parent_dir;
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
         bool copy_locale_files;
@@ -37,6 +38,7 @@ namespace GtkPacker {
             this.outdir = outdir;
             this.always_copy_themes = always_copy_themes;
             this.copy_locale_files = copy_locale_files;
+            parent_dir = Path.get_dirname (file_path).down ();
         }
     
         void copy_bin_files () throws Error {
@@ -61,6 +63,10 @@ namespace GtkPacker {
                         this.mingw_path = match_info.fetch (0);
                     } else {
                         condition = msys2_dep_regex.match (item[2]);
+                    }
+                    if (!condition && (Path.get_dirname (item[2]).down () == parent_dir)) {
+                        // Check for library at the same directory
+                        condition = true;
                     }
                     if (condition) {
                         this.dependencies.add (item[0]);
