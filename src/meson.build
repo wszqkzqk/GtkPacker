@@ -16,8 +16,7 @@ gtkpacker_deps = [
   gtk4,
   glib,
   gio,
-  gobject,
-  meson.get_compiler('c').find_library('m', required: false)
+  gobject
 ]
 
 gtkpacker_sources += gnome.compile_resources('gtkpacker-resources',
