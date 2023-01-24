@@ -145,7 +145,8 @@ namespace GtkPacker {
                             item
                         )
                     );
-                    copy_recursive (resource, target, FileCopyFlags.OVERWRITE);
+                    var re = /.*\.a/i;  // Ignore statically linked files
+                    copy_regex_match (resource, target, re, true, FileCopyFlags.OVERWRITE);
                 }
             }
         }
