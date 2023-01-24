@@ -145,7 +145,8 @@ namespace GtkPacker {
                             item
                         )
                     );
-                    var re = /.*\.a/i;  // Ignore statically linked files
+                    // Ignore statically linked files and xml or dtd that have compiled
+                    var re = /.*(\.a|\.xml|\.dtd)/i;
                     copy_regex_match (resource, target, re, true, FileCopyFlags.OVERWRITE);
                 }
             }

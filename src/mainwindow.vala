@@ -164,7 +164,7 @@ namespace GtkPacker {
                 };
                 {   // A label and a switch ABOUT I18N
                     // Whether to copy locale files
-                    var label = new Gtk.Label (_("Copy locale files:")) {
+                    var label = new Gtk.Label (_("Copy built-in locale files:")) {
                         hexpand = true,
                         halign = Gtk.Align.START
                     };
