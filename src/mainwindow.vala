@@ -34,7 +34,7 @@ namespace GtkPacker {
             }
         }
         bool always_copy_themes = false;
-        bool copy_locale_files = true;
+        bool copy_locale_files = false;
 
         public MainWindow (Gtk.Application app) {
             Object (
