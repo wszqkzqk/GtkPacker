@@ -130,6 +130,8 @@ namespace GtkPacker {
                     }
                 }
 
+                // Ignore statically linked files and xml or dtd that have compiled
+                var re = /.*(\.a|\.xml|\.dtd)/i;
                 foreach (unowned var item in gtk_resources) {
                     var resource = File.new_for_path (
                         Path.build_path (
@@ -145,8 +147,6 @@ namespace GtkPacker {
                             item
                         )
                     );
-                    // Ignore statically linked files and xml or dtd that have compiled
-                    var re = /.*(\.a|\.xml|\.dtd)/i;
                     copy_regex_match (resource, target, re, true, FileCopyFlags.OVERWRITE);
                 }
             }
