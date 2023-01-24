@@ -99,7 +99,7 @@ namespace GtkPacker {
             string[] gtk3_only_resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons")
+                Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons", "hicolor")
             };
 
             string[] gtk_resources = {
