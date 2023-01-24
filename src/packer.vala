@@ -26,7 +26,7 @@ namespace GtkPacker {
         string mingw_path = null;
         static Regex msys2_dep_regex {
             get;
-            default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/;
+            default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/i;
         }
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
@@ -195,11 +195,13 @@ namespace GtkPacker {
             );
             Regex re;
             if ("libadwaita-1-0.dll" in this.dependencies) {
-                re = /.*(gtk[^\\\/]*\.mo|glib20.mo|libadwaita.mo)/;
-            } else if ("libgtk-3-0.dll" in this.dependencies || "libgtk-4-1.dll" in this.dependencies) {
-                re = /.*(gtk[^\\\/]*\.mo|glib20.mo)/;
+                re = /.*(libadwaita\.mo|gtk40\.mo|glib20\.mo)/i;
+            } else if ("libgtk-4-1.dll" in this.dependencies) {
+                re = /.*(gtk40\.mo|glib20\.mo)/i;
+            } else if ("libgtk-3-0.dll" in this.dependencies) {
+                re = /.*(gtk30(-properties)?\.mo|glib20\.mo)/i;
             } else {
-                re = /.*glib20.mo/;
+                re = /.*glib20.mo/i;
             }
             copy_regex_match (resource, target, re, false, FileCopyFlags.OVERWRITE);
         }
