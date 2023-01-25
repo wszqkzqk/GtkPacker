@@ -32,13 +32,19 @@ namespace GtkPacker {
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
         bool copy_locale_files;
+        string[] locales;
     
-        public GtkPacker (string file_path, string outdir, bool always_copy_themes, bool copy_locale_files) {
+        public GtkPacker (string file_path,
+                          string outdir,
+                          bool always_copy_themes,
+                          bool copy_locale_files,
+                          string[] locales) {
             this.file_path = file_path;
             this.outdir = outdir;
             this.always_copy_themes = always_copy_themes;
             this.copy_locale_files = copy_locale_files;
             parent_dir = Path.get_dirname (file_path).down ();
+            this.locales = locales;
         }
     
         void copy_bin_files () throws Error {

@@ -35,6 +35,8 @@ namespace GtkPacker {
         }
         bool always_copy_themes = false;
         bool copy_locale_files = false;
+        string[] locales;
+        bool lang_in_entry = false;
 
         public MainWindow (Gtk.Application app) {
             Object (
@@ -65,13 +67,13 @@ namespace GtkPacker {
             // A VERTICAL box to contain more than one widgets
             var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
                 margin_start = 30,
-                margin_end = 30
+                margin_end = 30,
+                margin_top = 10,
+                margin_bottom = 10,
+                spacing = 20
             };
             {   // Each line of the VERTICAL box
-                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10
-                };
+                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("File path:")) {
                         hexpand = true,
@@ -103,10 +105,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line1);
 
-                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10
-                };
+                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("Copy to:")) {
                         hexpand = true,
@@ -135,10 +134,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line2);
 
-                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
+                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a switch ABOUT THEME FILES
                     // ALWAYS COPY THEME FILES
                     var label = new Gtk.Label (_("Always copy theme files:")) {
@@ -158,42 +154,113 @@ namespace GtkPacker {
                 }
                 box.append (box_line3);
 
-                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
+                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_line4_following = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a switch ABOUT I18N
                     // Whether to copy locale files
-                    var label = new Gtk.Label (_("Copy built-in locale files:")) {
+
+                    // May also add an option to only copy the languages contained in `PROFILE`
+                    // or input these languages (luaguage supported by the application)
+                    // These options should only shown when the shitch thrned on
+                    var label = new Gtk.Label (_("Options of built-in locale files:")) {
                         hexpand = true,
                         halign = Gtk.Align.START
                     };
                     box_line4.append (label);
 
-                    var switch_button = new Gtk.Switch () {
-                        state = copy_locale_files
-                    };
-                    switch_button.state_set.connect (() => {
-                        copy_locale_files = switch_button.state = !switch_button.state;
-                        return true;
-                    });
-                    box_line4.append (switch_button);
+                    Gtk.DropDown dropdown;
+                    {
+                        string[] options = {
+                            _("Don't copy"),
+                            _("Copy all locale files"),
+                            _("Copy the locale files included in PROFILE"),
+                            _("Input supported languages to copy")
+                        };
+                        dropdown = new Gtk.DropDown.from_strings(options);
+                        dropdown.notify["selected"].connect(() => {
+                            lang_in_entry = false;
+                            switch (dropdown.get_selected()) {
+                            case 0:
+                            case 1:
+                                // Don't copy or copy all
+                                box.remove (box_line4_following);
+                                break;
+                            case 2:
+                                // Copy the locale files included in PROFILE
+                                // Add PROFILE selecter
+                                box.remove (box_line4_following);
+                                box_line4_following = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                                {
+                                    var label_following = new Gtk.Label (_("Locales imported from PROFILE:")) {
+                                        hexpand = true,
+                                        halign = Gtk.Align.START
+                                    };
+                                    box_line4_following.append (label_following);
+                                    var file_button = new Gtk.Button.with_label ("   ......   ");
+                                    file_button.clicked.connect (() => {
+                                        var file_chooser = new Gtk.FileChooserNative (
+                                            null,
+                                            this,
+                                            Gtk.FileChooserAction.OPEN,
+                                            null,
+                                            null
+                                        );
+                                        file_chooser.response.connect ((a) => {
+                                            if (a == Gtk.ResponseType.ACCEPT) {
+                                                uint8[] content;
+                                                file_chooser.get_file ().load_contents (null, out content, null);
+                                                var re = /\s+/;
+                                                var langinfo = re.replace_literal (((string) content), -1, 0, " ");
+                                                locales = langinfo.split (" ");
+                                                file_button.label = langinfo;
+                                            }
+                                        });
+                                        file_chooser.show ();
+                                    });
+                                    box_line4_following.append (file_button);
+                                }
+                                box.insert_child_after (box_line4_following, box_line4);
+                                break;
+                            case 3:
+                                box.remove (box_line4_following);
+                                box_line4_following = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                                {
+                                    var label_following = new Gtk.Label (_("Input languages:")) {
+                                        hexpand = true,
+                                        halign = Gtk.Align.START
+                                    };
+                                    box_line4_following.append (label_following);
+                                    var entry = new Gtk.Entry ();
+                                    entry.set_placeholder_text(_("Languages splited by one space"));
+                                    box_line4_following.append (entry);
+                                }
+                                box.insert_child_after (box_line4_following, box_line4);
+                                lang_in_entry = true;
+                                break;
+                            }
+                        });
+                    }
+                    box_line4.append (dropdown);
                 }
                 box.append (box_line4);
 
-                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
-                {
+                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                {   // Locale files of the applicaiton itself
+                    var label = new Gtk.Label (_("Copy locale files of the application:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line5.append (label);
 
+                    var switch_button = new Gtk.Switch ();
+                    box_line5.append (switch_button);
                 }
                 box.append (box_line5);
 
                 var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                    halign = Gtk.Align.CENTER
+                    halign = Gtk.Align.CENTER,
+                    valign = Gtk.Align.END,
+                    vexpand = true
                 };
                 {   // Confirm Button
                     var button = new Gtk.Button.with_label (_("Confirm"));
@@ -206,7 +273,8 @@ namespace GtkPacker {
                                 exec_file_path,
                                 output_dir_path,
                                 always_copy_themes,
-                                copy_locale_files
+                                copy_locale_files,
+                                locales
                             );
                             try {
                                 packer.run ();
