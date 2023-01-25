@@ -65,13 +65,11 @@ namespace GtkPacker {
             // A VERTICAL box to contain more than one widgets
             var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
                 margin_start = 30,
-                margin_end = 30
+                margin_end = 30,
+                spacing = 20
             };
             {   // Each line of the VERTICAL box
-                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10
-                };
+                var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("File path:")) {
                         hexpand = true,
@@ -103,10 +101,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line1);
 
-                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10
-                };
+                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("Copy to:")) {
                         hexpand = true,
@@ -135,10 +130,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line2);
 
-                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
+                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
                 {   // A label and a switch ABOUT THEME FILES
                     // ALWAYS COPY THEME FILES
                     var label = new Gtk.Label (_("Always copy theme files:")) {
@@ -158,10 +150,9 @@ namespace GtkPacker {
                 }
                 box.append (box_line3);
 
-                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
+                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                // The switch this line should be accessible by others
+                var switch_line4 = new Gtk.Switch () { state = copy_locale_files };
                 {   // A label and a switch ABOUT I18N
                     // Whether to copy locale files
                     var label = new Gtk.Label (_("Copy built-in locale files:")) {
@@ -170,31 +161,22 @@ namespace GtkPacker {
                     };
                     box_line4.append (label);
 
-                    var switch_button = new Gtk.Switch () {
-                        state = copy_locale_files
-                    };
-                    switch_button.state_set.connect (() => {
-                        copy_locale_files = switch_button.state = !switch_button.state;
+                    switch_line4.state_set.connect (() => {
+                        copy_locale_files = switch_line4.state = !switch_line4.state;
                         return true;
                     });
-                    box_line4.append (switch_button);
+                    box_line4.append (switch_line4);
                 }
                 box.append (box_line4);
 
-                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                };
-                {
+                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                {   // Whether to simplify the copy of locale files
+                    // (Only copy languages supported by the application)
 
                 }
                 box.append (box_line5);
 
-                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    margin_top = 10,
-                    margin_bottom = 10,
-                    halign = Gtk.Align.CENTER
-                };
+                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) { halign = Gtk.Align.CENTER };
                 {   // Confirm Button
                     var button = new Gtk.Button.with_label (_("Confirm"));
                     {
