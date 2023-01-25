@@ -4,7 +4,7 @@ project('gtkpacker', ['c', 'vala'],
   default_options: [ 'warning_level=2', 'werror=false', ],
 )
 
-add_project_arguments('-DGETTEXT_PACKAGE="..."', language: 'c')
+add_project_arguments('-DGETTEXT_PACKAGE="{}"'.format(meson.project_name()), language: 'c')
 
 i18n = import('i18n')
 gnome = import('gnome')

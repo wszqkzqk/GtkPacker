@@ -1,0 +1,64 @@
+#: data/dev.wszqkzqk.gtkpacker.desktop.in:3
+msgid "gtkpacker"
+msgstr ""
+
+#: data/dev.wszqkzqk.gtkpacker.appdata.xml.in:7
+msgid "No description"
+msgstr ""
+
+#: src/mainwindow.vala:42
+msgid "GtkPacker"
+msgstr "GTK应用程序打包器"
+
+#. menu of the menu button
+#. item of the menu
+#: src/mainwindow.vala:55
+msgid "Preferences"
+msgstr "选项"
+
+#: src/mainwindow.vala:56
+msgid "Keyboard Shortcuts"
+msgstr "快捷键"
+
+#: src/mainwindow.vala:57
+msgid "About GtkPacker"
+msgstr "关于GTK应用程序打包器"
+
+#. A label and a filechooserbutton
+#: src/mainwindow.vala:76
+msgid "File path:"
+msgstr "文件路径："
+
+#. A label and a filechooserbutton
+#: src/mainwindow.vala:111
+msgid "Copy to:"
+msgstr "复制到："
+
+#. A label and a switch ABOUT THEME FILES
+#. ALWAYS COPY THEME FILES
+#: src/mainwindow.vala:144
+msgid "Always copy theme files:"
+msgstr "总是复制主题文件："
+
+#. A label and a switch ABOUT I18N
+#. Whether to copy locale files
+#: src/mainwindow.vala:167
+msgid "Copy built-in locale files:"
+msgstr "复制内置国际化文件："
+
+#. Confirm Button
+#: src/mainwindow.vala:199
+msgid "Confirm"
+msgstr "确定"
+
+#: src/mainwindow.vala:214
+msgid "Done"
+msgstr "完成"
+
+#: src/mainwindow.vala:217
+msgid "Done!"
+msgstr "完成！"
+
+#: src/mainwindow.vala:228
+msgid "Error"
+msgstr "错误"

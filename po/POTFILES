@@ -2,5 +2,5 @@ data/dev.wszqkzqk.gtkpacker.desktop.in
 data/dev.wszqkzqk.gtkpacker.appdata.xml.in
 data/dev.wszqkzqk.gtkpacker.gschema.xml
 src/main.vala
-src/window.vala
-src/window.ui
+src/mainwindow.vala
+src/packer.vala
