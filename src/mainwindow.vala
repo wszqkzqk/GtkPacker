@@ -36,6 +36,7 @@ namespace GtkPacker {
         bool always_copy_themes = false;
         bool copy_locale_files = false;
         string[] locales;
+        Gtk.Entry lang_entry;
         bool lang_in_entry = false;
 
         public MainWindow (Gtk.Application app) {
@@ -230,9 +231,9 @@ namespace GtkPacker {
                                         halign = Gtk.Align.START
                                     };
                                     box_line4_following.append (label_following);
-                                    var entry = new Gtk.Entry ();
-                                    entry.set_placeholder_text(_("Languages splited by one space"));
-                                    box_line4_following.append (entry);
+                                    lang_entry = new Gtk.Entry ();
+                                    lang_entry.set_placeholder_text(_("Languages splited by spaces"));
+                                    box_line4_following.append (lang_entry);
                                 }
                                 box.insert_child_after (box_line4_following, box_line4);
                                 lang_in_entry = true;
@@ -268,6 +269,11 @@ namespace GtkPacker {
                         button.clicked.connect (() => {
                             if (exec_file_path == null || output_dir_path == null) {
                                 return;
+                            }
+                            if (lang_in_entry) {
+                                var re = /\s+/;
+                                var langinfo = re.replace_literal ((lang_entry.buffer.text), -1, 0, " ");
+                                locales = langinfo.split (" ");
                             }
                             var packer = new GtkPacker (
                                 exec_file_path,
