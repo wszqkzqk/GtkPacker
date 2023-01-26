@@ -66,6 +66,8 @@ namespace GtkPacker {
             var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
                 margin_start = 30,
                 margin_end = 30,
+                margin_top = 10,
+                margin_bottom = 10,
                 spacing = 20
             };
             {   // Each line of the VERTICAL box
@@ -176,7 +178,11 @@ namespace GtkPacker {
                 }
                 box.append (box_line5);
 
-                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) { halign = Gtk.Align.CENTER };
+                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    halign = Gtk.Align.CENTER,
+                    valign = Gtk.Align.END,
+                    vexpand = true
+                };
                 {   // Confirm Button
                     var button = new Gtk.Button.with_label (_("Confirm"));
                     {
