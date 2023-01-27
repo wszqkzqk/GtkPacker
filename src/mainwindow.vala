@@ -33,8 +33,15 @@ namespace GtkPacker {
                 return (output_dir == null) ? null : output_dir.get_path ();
             }
         }
+        public File? locale_dir {get; set;}
+        public string? locale_dir_path {
+            owned get {
+                return (locale_dir == null) ? null : locale_dir.get_path ();
+            }
+        }
         bool always_copy_themes = false;
         bool copy_locale_files = false;
+        bool lazy_copy_locale = true;
 
         public MainWindow (Gtk.Application app) {
             Object (
@@ -71,7 +78,22 @@ namespace GtkPacker {
                 spacing = 20
             };
             {   // Each line of the VERTICAL box
+                
+                // declare for public accessing
                 var box_line1 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) { sensitive = copy_locale_files };
+                var box_line6 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    halign = Gtk.Align.CENTER,
+                    valign = Gtk.Align.END,
+                    vexpand = true,
+                    sensitive = (exec_file != null && output_dir != null)
+                };
+
+                // line1
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("File path:")) {
                         hexpand = true,
@@ -91,6 +113,7 @@ namespace GtkPacker {
                         file_chooser.response.connect ((a) => {
                             if (a == Gtk.ResponseType.ACCEPT) {
                                 exec_file = file_chooser.get_file ();
+                                box_last.sensitive = (exec_file != null && output_dir != null);
                                 file_button.label = Path.get_basename (exec_file.get_path ());
                             }
                         });
@@ -103,7 +126,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line1);
 
-                var box_line2 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                // line2
                 {   // A label and a filechooserbutton
                     var label = new Gtk.Label (_("Copy to:")) {
                         hexpand = true,
@@ -123,6 +146,7 @@ namespace GtkPacker {
                         file_chooser.response.connect ((a) => {
                             if (a == Gtk.ResponseType.ACCEPT) {
                                 output_dir = file_chooser.get_file ();
+                                box_last.sensitive = (exec_file != null && output_dir != null);
                                 file_button.label = Path.get_basename (output_dir.get_path ());
                             }
                         });
@@ -132,7 +156,7 @@ namespace GtkPacker {
                 }
                 box.append (box_line2);
 
-                var box_line3 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                // line3
                 {   // A label and a switch ABOUT THEME FILES
                     // ALWAYS COPY THEME FILES
                     var label = new Gtk.Label (_("Always copy theme files:")) {
@@ -152,8 +176,8 @@ namespace GtkPacker {
                 }
                 box.append (box_line3);
 
-                var box_line4 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-                // The switch this line should be accessible by others
+                // line4
+                // Some public widgets should to be declared
                 var switch_line4 = new Gtk.Switch () { state = copy_locale_files };
                 {   // A label and a switch ABOUT I18N
                     // Whether to copy locale files
@@ -164,25 +188,64 @@ namespace GtkPacker {
                     box_line4.append (label);
 
                     switch_line4.state_set.connect (() => {
-                        copy_locale_files = switch_line4.state = !switch_line4.state;
+                        copy_locale_files = !switch_line4.state;
+                        switch_line4.state = copy_locale_files;
+                        box_line5.sensitive = copy_locale_files && locale_dir != null;
                         return true;
                     });
                     box_line4.append (switch_line4);
                 }
                 box.append (box_line4);
 
-                var box_line5 = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                // line5
                 {   // Whether to simplify the copy of locale files
                     // (Only copy languages supported by the application)
+                    var label = new Gtk.Label (_("Lazy mode of locale copying:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line5.append (label);
 
+                    var switch_line5 = new Gtk.Switch () { state = lazy_copy_locale };
+                    switch_line5.state_set.connect (() => {
+                        lazy_copy_locale = switch_line5.state = !switch_line5.state;
+                        return true;
+                    });
+                    box_line5.append (switch_line5);
                 }
                 box.append (box_line5);
 
-                var box_last = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-                    halign = Gtk.Align.CENTER,
-                    valign = Gtk.Align.END,
-                    vexpand = true
-                };
+                // line6
+                {   // The locale file of the application
+                    var label = new Gtk.Label (_("Locale files of the application:")) {
+                        hexpand = true,
+                        halign = Gtk.Align.START
+                    };
+                    box_line6.append (label);
+
+                    var file_button = new Gtk.Button.with_label ("   ......   ");
+                    file_button.clicked.connect (() => {
+                        var file_chooser = new Gtk.FileChooserNative (
+                            null,
+                            this,
+                            Gtk.FileChooserAction.SELECT_FOLDER,
+                            null,
+                            null
+                        );
+                        file_chooser.response.connect ((a) => {
+                            if (a == Gtk.ResponseType.ACCEPT) {
+                                locale_dir = file_chooser.get_file ();
+                                box_line5.sensitive = copy_locale_files && locale_dir != null;
+                                file_button.label = Path.get_basename (locale_dir.get_path ());
+                            }
+                        });
+                        file_chooser.show ();
+                    });
+                    box_line6.append (file_button);
+                }
+                box.append (box_line6);
+
+                // box_last
                 {   // Confirm Button
                     var button = new Gtk.Button.with_label (_("Confirm"));
                     {
