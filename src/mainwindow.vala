@@ -225,25 +225,17 @@ namespace GtkPacker {
 
                     var file_button = new Gtk.Button.with_label ("   ......   ");
                     file_button.clicked.connect (() => {
-                        var file_chooser = new Gtk.FileChooserNative (
-                            null,
-                            this,
-                            Gtk.FileChooserAction.SELECT_FOLDER,
-                            null,
-                            null
-                        );
-                        file_chooser.response.connect ((a) => {
-                            if (a == Gtk.ResponseType.ACCEPT) {
-                                locale_dir = file_chooser.get_file ();
-                                box_line5.sensitive = copy_locale_files && locale_dir != null;
-                                file_button.label = Path.get_basename (locale_dir.get_path ());
-                            }
-                        });
-                        file_chooser.show ();
+                        var dialog = new Gtk.FileDialog ();
+                        dialog.open.begin (this, null, null);
                     });
                     box_line6.append (file_button);
                 }
                 box.append (box_line6);
+
+                // line7
+                {   //
+
+                }
 
                 // box_last
                 {   // Confirm Button
