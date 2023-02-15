@@ -28,6 +28,14 @@ namespace GtkPacker {
             get;
             default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/i;
         }
+        static Regex ignore_dep_regex {
+            get;
+            default = /^$|^not$|.*(\/|\\)(WINDOWS)(\/|\\)/mi;
+        }
+        static Regex ignore_res_regex {
+            get;
+            default = /.*(\.a|\.xml|\.dtd)/i;
+        }
         string parent_dir;
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
@@ -56,22 +64,21 @@ namespace GtkPacker {
             foreach (unowned var i in deps_info_array) {
                 var item = (i._strip ()).split (" ");
                 if ((item.length == 4) && (!(item[0] in this.dependencies))) {
-                    bool condition;
+                    bool condition = false;
                     if (this.mingw_path == null) {
                         MatchInfo match_info;
                         condition = msys2_dep_regex.match (item[2], 0, out match_info);
                         this.mingw_path = match_info.fetch (0);
-                    } else {
-                        condition = msys2_dep_regex.match (item[2]);
                     }
-                    if (!condition && (Path.get_dirname (item[2]).down () == parent_dir)) {
-                        // Check for library at the same directory
-                        condition = true;
+                    if (!condition && item[2] != null) {
+                        if (!ignore_dep_regex.match (item[2])) {
+                            condition = true;
+                        }
                     }
                     if (condition) {
                         this.dependencies.add (item[0]);
                         file = File.new_for_path (item[2]);
-                        target = File.new_for_path (Path.build_path(Path.DIR_SEPARATOR_S, bin_path, item[0]));
+                        target = File.new_for_path (Path.build_path (Path.DIR_SEPARATOR_S, bin_path, item[0]));
                         file.copy (target, FileCopyFlags.OVERWRITE);
                     }
                 }
@@ -137,7 +144,6 @@ namespace GtkPacker {
                 }
 
                 // Ignore statically linked files and xml or dtd that have compiled
-                var re = /.*(\.a|\.xml|\.dtd)/i;
                 foreach (unowned var item in gtk_resources) {
                     var resource = File.new_for_path (
                         Path.build_path (
@@ -153,7 +159,7 @@ namespace GtkPacker {
                             item
                         )
                     );
-                    copy_regex_match (resource, target, re, true, FileCopyFlags.OVERWRITE);
+                    copy_regex_match (resource, target, ignore_res_regex, true, FileCopyFlags.OVERWRITE);
                 }
             }
         }
