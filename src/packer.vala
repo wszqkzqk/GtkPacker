@@ -26,11 +26,11 @@ namespace GtkPacker {
         string mingw_path = null;
         static Regex msys2_dep_regex {
             get;
-            default = /.*(\/|\\)(usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)(\/|\\)/i;
+            default = /.*[\/\\](usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)[\/\\]/i;
         }
         static Regex ignore_dep_regex {
             get;
-            default = /^$|^not$|.*(\/|\\)(WINDOWS)(\/|\\)/mi;
+            default = /^$|^not$|.*[\/\\](WINDOWS)[\/\\]/mi;
         }
         static Regex ignore_res_regex {
             get;
@@ -209,11 +209,11 @@ namespace GtkPacker {
             );
             Regex re;
             if ("libadwaita-1-0.dll" in this.dependencies) {
-                re = /.*(libadwaita\.mo|gtk40\.mo|glib20\.mo)/i;
+                re = /.*(libadwaita|gtk40|glib20)\.mo/i;
             } else if ("libgtk-4-1.dll" in this.dependencies) {
-                re = /.*(gtk40\.mo|glib20\.mo)/i;
+                re = /.*(gtk40|glib20)\.mo/i;
             } else if ("libgtk-3-0.dll" in this.dependencies) {
-                re = /.*(gtk30(-properties)?\.mo|glib20\.mo)/i;
+                re = /.*(gtk30(-properties)?|glib20)\.mo/i;
             } else {
                 re = /.*glib20.mo/i;
             }
