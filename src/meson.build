@@ -6,23 +6,15 @@ version_file = vcs_tag(
 
 gtkpacker_sources = [
   'main.vala',
-  'application.vala',
-  'mainwindow.vala',
   'packer.vala',
   version_file
 ]
 
 gtkpacker_deps = [
-  gtk4,
   glib,
   gio,
   gobject
 ]
-
-gtkpacker_sources += gnome.compile_resources('gtkpacker-resources',
-  'gtkpacker.gresource.xml',
-  c_name: 'gtkpacker'
-)
 
 executable('gtkpacker', gtkpacker_sources,
   dependencies: gtkpacker_deps,

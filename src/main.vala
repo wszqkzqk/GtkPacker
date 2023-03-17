@@ -1,6 +1,6 @@
 /* main.vala
  *
- * Copyright 2022 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>
+ * Copyright 2022-2023 wszqkzqk (周乾康) <wszqkzqk@stu.pku.edu.cn>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,75 @@
  */
 extern const string GETTEXT_PACKAGE;
 
-int main (string[] args) {
-    var app = new GtkPacker.Application ();
-    return app.run (args);
+namespace GtkPacker {    
+    public class CLI {
+        static bool show_version = false;
+        static string? file_path = null;
+        static string? outdir = null;
+        static bool always_copy_themes = false;
+        static bool copy_locale_files = true;
+        static bool lazy_copy_locale = true;
+        static OptionEntry[] options = {
+            { "version", 'v', OptionFlags.NONE, OptionArg.NONE, &show_version, _("Display version number"), null },
+            { "input", 'i', OptionFlags.NONE, OptionArg.FILENAME, ref file_path, _("Input executable FILE"), "FILENAME" },
+            { "output", 'o', OptionFlags.NONE, OptionArg.FILENAME, ref outdir, _("Place output in DIRECTORY"), "DIRECTORY" },
+            { "always-copy-themes", '\0', OptionFlags.NONE, OptionArg.NONE, &always_copy_themes, _("Force to copy the theme files of GTK"), null },
+            { "ignore-builtin-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, &copy_locale_files, _("Do NOT copy the locale file of dependency libraries"), null },
+            { "full-copy-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, &lazy_copy_locale, _("Copy all locale file of dependency libraries instead of only the needed files"), null },
+            null
+        };
+        OptionContext opt_context = new OptionContext ("A tool to pack GTK applications in Windows");
+
+        public inline CLI () {
+            opt_context.set_help_enabled (true);
+            opt_context.add_main_entries (options, null);
+        }
+
+        public inline void parse (ref weak string[] args)
+        throws OptionError {
+            opt_context.parse (ref args);
+        }
+
+        public static int main (string[] args) {
+            Intl.setlocale ();
+
+            try {
+                var cli = new CLI ();
+                cli.parse (ref args);
+            } catch (OptionError e) {
+                printerr (_("error: %s\n"), e.message);
+                return 1;
+            }
+
+            if (show_version) {
+                print ("GtkPacker CLI v%s\n", VERSION);
+                return 0;
+            }
+
+            if (file_path == null) {
+                printerr (_("error: The executable file to copy is not set.\n"));
+                return 1;
+            }
+            if (outdir == null) {
+                printerr (_("error: The output directory is not set.\n"));
+                return 1;
+            }
+
+            var packer = new GtkPacker (
+                (!) file_path,
+                (!) outdir,
+                always_copy_themes,
+                copy_locale_files,
+                lazy_copy_locale
+            );
+            try {
+                packer.run ();
+            } catch (Error e) {
+                printerr (_("error: %s\n"), e.message);
+                return 1;
+            }
+
+            return 0;
+        }
+    }
 }

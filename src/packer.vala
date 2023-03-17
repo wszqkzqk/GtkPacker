@@ -21,32 +21,27 @@
 
 namespace GtkPacker {
     public class GtkPacker {
-        public string file_path;
-        public string outdir;
+        string file_path;
+        string outdir;
         string mingw_path = null;
-        static Regex msys2_dep_regex {
-            get;
-            default = /.*[\/\\](usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)[\/\\]/i;
-        }
-        static Regex ignore_dep_regex {
-            get;
-            default = /^$|^not$|.*[\/\\](WINDOWS)[\/\\]/mi;
-        }
-        static Regex ignore_res_regex {
-            get;
-            default = /.*(\.a|\.xml|\.dtd)/i;
-        }
-        string parent_dir;
+        static Regex msys2_dep_regex = /.*[\/\\](usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)[\/\\]/i;
+        static Regex ignore_dep_regex = /^$|^not$|.*[\/\\](WINDOWS)[\/\\]/mi;
+        static Regex ignore_res_regex = /.*(\.a|\.xml|\.dtd)/i;
+        //string parent_dir;
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
         bool copy_locale_files;
+        bool lazy_copy_locale;
     
-        public GtkPacker (string file_path, string outdir, bool always_copy_themes, bool copy_locale_files) {
+        public GtkPacker (string file_path, string outdir,
+                          bool always_copy_themes, bool copy_locale_files,
+                          bool lazy_copy_locale) {
             this.file_path = file_path;
             this.outdir = outdir;
             this.always_copy_themes = always_copy_themes;
             this.copy_locale_files = copy_locale_files;
-            parent_dir = Path.get_dirname (file_path).down ();
+            this.lazy_copy_locale = lazy_copy_locale;
+            //parent_dir = Path.get_dirname (file_path).down ();
         }
     
         void copy_bin_files () throws Error {
