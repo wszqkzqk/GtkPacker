@@ -17,11 +17,11 @@ At present, there are few tools for packaging GTK applications under Windows. Th
 ### Dependencies
 
 * For Runtime:
-  * `gtk4` and its dependencies
+  * `glib`
   * `ntldd` to analyze the dependencies of Windows applications
 * For Build:
-  * `gtk4` and its dependencies
   * `gcc` or other C compilers
+  * `glib`
   * `vala`
   * `meson`
   * `ninja`
@@ -31,7 +31,7 @@ At present, there are few tools for packaging GTK applications under Windows. Th
 Confirm your MSYS2 environment and install related packages, for example, `UCRT64`:
 
 ```bash
-pacman -S mingw-w64-ucrt-x86_64-gtk4 mingw-w64-ucrt-x86_64-ntldd mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-vala mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja
+pacman -S mingw-w64-ucrt-x86_64-ntldd mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-vala mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja
 ```
 
 ### Setup, Compile and Install
