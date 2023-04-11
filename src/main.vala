@@ -32,13 +32,17 @@ namespace GtkPacker {
         static bool always_copy_themes = false;
         static bool copy_locale_files = true;
         static bool lazy_copy_locale = true;
+        static string? user_locale_file_dir = null;
+        static string[]? supported_langs = null;
         static OptionEntry[] options = {
-            { "version", 'v', OptionFlags.NONE, OptionArg.NONE, &show_version, _("Display version number"), null },
+            { "version", 'v', OptionFlags.NONE, OptionArg.NONE, ref show_version, _("Display version number"), null },
             { "input", 'i', OptionFlags.NONE, OptionArg.FILENAME, ref file_path, _("Input executable FILE"), "FILENAME" },
             { "output", 'o', OptionFlags.NONE, OptionArg.FILENAME, ref outdir, _("Place output in DIRECTORY"), "DIRECTORY" },
-            { "always-copy-themes", '\0', OptionFlags.NONE, OptionArg.NONE, &always_copy_themes, _("Force to copy the theme files of GTK"), null },
-            { "ignore-builtin-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, &copy_locale_files, _("Do NOT copy the locale file of dependency libraries"), null },
-            { "full-copy-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, &lazy_copy_locale, _("Copy all locale file of dependency libraries instead of only the needed files"), null },
+            { "always-copy-themes", '\0', OptionFlags.NONE, OptionArg.NONE, ref always_copy_themes, _("Force to copy the theme files of GTK"), null },
+            { "ignore-builtin-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, ref copy_locale_files, _("Do NOT copy the locale file of dependency libraries"), null },
+            { "full-copy-locale", '\0', OptionFlags.REVERSE, OptionArg.NONE, ref lazy_copy_locale, _("Copy all locale file of dependency libraries instead of only the needed files"), null },
+            { "set-supported-lang", 'a', OptionFlags.NONE, OptionArg.STRING_ARRAY, ref supported_langs, _("Manually set supported language of the application, can be used more than one times"), "LANG" },
+            { "locale-dir", 'l', OptionFlags.NONE, OptionArg.FILENAME, ref user_locale_file_dir, _("The locale DIRECTORY of you application"), "DIRECTORY" },
             null
         };
         OptionContext opt_context = new OptionContext ("A tool to pack GTK applications in Windows");
@@ -79,8 +83,8 @@ namespace GtkPacker {
             }
 
             var packer = new GtkPacker (
-                (!) file_path,
-                (!) outdir,
+                file_path,
+                outdir,
                 always_copy_themes,
                 copy_locale_files,
                 lazy_copy_locale

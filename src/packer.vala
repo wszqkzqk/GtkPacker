@@ -24,15 +24,22 @@ namespace GtkPacker {
         string file_path;
         string outdir;
         string mingw_path = null;
-        static Regex msys2_dep_regex = /.*[\/\\](usr|ucrt64|clang64|mingw64|mingw32|clang32|clangarm64)[\/\\]/i;
+        static Regex msys2_dep_regex = /.*[\/\\](usr|ucrt64|clang(32|64|arm64)|mingw(32|64))[\/\\]/i;
         static Regex ignore_dep_regex = /^$|^not$|.*[\/\\](WINDOWS)[\/\\]/mi;
-        static Regex ignore_res_regex = /.*(\.a|\.xml|\.dtd)/i;
+        static Regex ignore_res_regex = /.*\.(a|xml|dtd)$/i;
         //string parent_dir;
         GenericSet<string> dependencies = new GenericSet<string> (str_hash, str_equal);
         bool always_copy_themes;
         bool copy_locale_files;
         bool lazy_copy_locale;
     
+        /*
+            * @param file_path: the path of the executable file
+            * @param outdir: the output directory
+            * @param always_copy_themes: whether to copy themes even if the executable file is not a GTK application
+            * @param copy_locale_files: whether to copy locale files
+            * @param lazy_copy_locale: whether to copy locale files only when the locale file is needed
+         */
         public GtkPacker (string file_path, string outdir,
                           bool always_copy_themes, bool copy_locale_files,
                           bool lazy_copy_locale) {
@@ -44,6 +51,10 @@ namespace GtkPacker {
             //parent_dir = Path.get_dirname (file_path).down ();
         }
     
+        
+        /*
+            * Copy the executable file and its dependencies to the output directory
+         */
         void copy_bin_files () throws Error {
             string deps_info;
     
@@ -80,6 +91,9 @@ namespace GtkPacker {
             }
         }
     
+        /*
+            * Recursively copy method
+         */
         static bool copy_recursive (File src, File dest, FileCopyFlags flags = FileCopyFlags.NONE, Cancellable? cancellable = null) throws Error {
             FileType src_type = src.query_file_type (FileQueryInfoFlags.NONE, cancellable);
             if (src_type == FileType.DIRECTORY) {
@@ -103,6 +117,9 @@ namespace GtkPacker {
             return true;
         }
     
+        /*
+            * Copy the resources of the executable file to the output directory
+         */
         inline void copy_resources () throws Error {
             string[] gtk3_only_resources = {
                 Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
@@ -185,6 +202,9 @@ namespace GtkPacker {
             }
         }
 
+        /*
+            * Copy the locale files to the output directory
+         */
         inline void copy_locale () throws Error {
             var resource = File.new_for_path (
                 Path.build_path (
@@ -204,13 +224,13 @@ namespace GtkPacker {
             );
             Regex re;
             if ("libadwaita-1-0.dll" in this.dependencies) {
-                re = /.*(libadwaita|gtk40|glib20)\.mo/i;
+                re = /.*(libadwaita|gtk40|glib20)\.mo$/i;
             } else if ("libgtk-4-1.dll" in this.dependencies) {
-                re = /.*(gtk40|glib20)\.mo/i;
+                re = /.*(gtk40|glib20)\.mo$/i;
             } else if ("libgtk-3-0.dll" in this.dependencies) {
-                re = /.*(gtk30(-properties)?|glib20)\.mo/i;
+                re = /.*(gtk30(-properties)?|glib20)\.mo$/i;
             } else {
-                re = /.*glib20.mo/i;
+                re = /.*glib20.mo$/i;
             }
             copy_regex_match (resource, target, re, false, FileCopyFlags.OVERWRITE);
         }
