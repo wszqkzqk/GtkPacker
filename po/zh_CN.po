@@ -1,0 +1,55 @@
+#: data/dev.wszqkzqk.gtkpacker.desktop.in:3
+msgid "gtkpacker"
+msgstr ""
+
+#: data/dev.wszqkzqk.gtkpacker.appdata.xml.in:7
+msgid "No description"
+msgstr ""
+
+#: src/main.vala:38
+msgid "Display version number"
+msgstr "显示版本号"
+
+#: src/main.vala:39
+msgid "Input executable FILE"
+msgstr "待打包可执行文件FILE"
+
+#: src/main.vala:40
+msgid "Place output in DIRECTORY"
+msgstr "输出到DIRECTORY中"
+
+#: src/main.vala:41
+msgid "Force to copy the theme files of GTK"
+msgstr "一律复制GTK主题文件"
+
+#: src/main.vala:42
+msgid "Do NOT copy the locale file of dependency libraries"
+msgstr "不要复制国际化文件"
+
+#: src/main.vala:43
+msgid ""
+"Copy all locale file of dependency libraries instead of only the needed files"
+msgstr "复制依赖包的所有国际化文件"
+
+#: src/main.vala:44
+msgid ""
+"Manually set supported language of the application, can be used more than "
+"one times"
+msgstr "手动设定程序支持的语言，可设定多次"
+
+#: src/main.vala:45
+msgid "The locale DIRECTORY of you application"
+msgstr "程序的国际化文件目录"
+
+#: src/main.vala:67 src/main.vala:95
+#, c-format
+msgid "error: %s\n"
+msgstr "错误：%s\n"
+
+#: src/main.vala:77
+msgid "error: The executable file to copy is not set.\n"
+msgstr "错误：未指定待打包文件。\n"
+
+#: src/main.vala:81
+msgid "error: The output directory is not set.\n"
+msgstr "错误：未指定打包输出路径。\n"

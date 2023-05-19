@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gtkpacker package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gtkpacker\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-19 13:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/dev.wszqkzqk.gtkpacker.desktop.in:3
+msgid "gtkpacker"
+msgstr ""
+
+#: data/dev.wszqkzqk.gtkpacker.appdata.xml.in:7
+msgid "No description"
+msgstr ""
+
+#: src/main.vala:38
+msgid "Display version number"
+msgstr ""
+
+#: src/main.vala:39
+msgid "Input executable FILE"
+msgstr ""
+
+#: src/main.vala:40
+msgid "Place output in DIRECTORY"
+msgstr ""
+
+#: src/main.vala:41
+msgid "Force to copy the theme files of GTK"
+msgstr ""
+
+#: src/main.vala:42
+msgid "Do NOT copy the locale file of dependency libraries"
+msgstr ""
+
+#: src/main.vala:43
+msgid ""
+"Copy all locale file of dependency libraries instead of only the needed files"
+msgstr ""
+
+#: src/main.vala:44
+msgid ""
+"Manually set supported language of the application, can be used more than "
+"one times"
+msgstr ""
+
+#: src/main.vala:45
+msgid "The locale DIRECTORY of you application"
+msgstr ""
+
+#: src/main.vala:67 src/main.vala:95
+#, c-format
+msgid "error: %s\n"
+msgstr ""
+
+#: src/main.vala:77
+msgid "error: The executable file to copy is not set.\n"
+msgstr ""
+
+#: src/main.vala:81
+msgid "error: The output directory is not set.\n"
+msgstr ""
