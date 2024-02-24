@@ -33,6 +33,7 @@ namespace GtkPacker {
         static bool copy_locale_files = true;
         static bool lazy_copy_locale = true;
         static string? user_locale_file_dir = null;
+        [CCode (array_length = false, array_null_terminated = true)]
         static string[]? supported_langs = null;
         static OptionEntry[] options = {
             { "version", 'v', OptionFlags.NONE, OptionArg.NONE, ref show_version, _("Display version number"), null },
