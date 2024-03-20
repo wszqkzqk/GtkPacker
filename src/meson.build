@@ -21,3 +21,8 @@ executable('gtkpacker', gtkpacker_sources,
        install: true,
  win_subsystem: 'windows'
 )
+
+library('gtkpacker', gtkpacker_sources,
+  dependencies: gtkpacker_deps,
+       install: true,
+)

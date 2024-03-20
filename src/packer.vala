@@ -59,11 +59,11 @@ namespace GtkPacker {
             string deps_info;
     
             Process.spawn_command_line_sync (@"ntldd -R '$(this.file_path)'", out deps_info);
-            var bin_path = Path.build_path (Path.DIR_SEPARATOR_S, this.outdir, "bin");
+            var bin_path = Path.build_filename (this.outdir, "bin");
             DirUtils.create_with_parents (bin_path, 0644);
             
             var file = File.new_for_path (this.file_path);
-            var target = File.new_for_path (Path.build_path (Path.DIR_SEPARATOR_S, bin_path, file.get_basename ()));
+            var target = File.new_for_path (Path.build_filename (bin_path, file.get_basename ()));
             file.copy (target, FileCopyFlags.OVERWRITE);
             
             var deps_info_array = deps_info.split ("\n");
@@ -84,7 +84,7 @@ namespace GtkPacker {
                     if (condition) {
                         this.dependencies.add (item[0]);
                         file = File.new_for_path (item[2]);
-                        target = File.new_for_path (Path.build_path (Path.DIR_SEPARATOR_S, bin_path, item[0]));
+                        target = File.new_for_path (Path.build_filename (bin_path, item[0]));
                         file.copy (target, FileCopyFlags.OVERWRITE);
                     }
                 }
@@ -122,14 +122,14 @@ namespace GtkPacker {
          */
         inline void copy_resources () throws Error {
             string[] gtk3_only_resources = {
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "default", "gtk-3.0"),
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "themes", "emacs", "gtk-3.0"),
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "icons", "hicolor")
+                Path.build_filename ("share", "themes", "default", "gtk-3.0"),
+                Path.build_filename ("share", "themes", "emacs", "gtk-3.0"),
+                Path.build_filename ("share", "icons", "hicolor")
             };
 
             string[] gtk_resources = {
-                Path.build_path (Path.DIR_SEPARATOR_S, "share", "glib-2.0", "schemas"),
-                Path.build_path (Path.DIR_SEPARATOR_S, "lib", "gdk-pixbuf-2.0")
+                Path.build_filename ("share", "glib-2.0", "schemas"),
+                Path.build_filename ("lib", "gdk-pixbuf-2.0")
             };
 
             if (always_copy_themes
@@ -138,15 +138,13 @@ namespace GtkPacker {
                 if (always_copy_themes || "libgtk-3-0.dll" in this.dependencies) {
                     foreach (unowned var item in gtk3_only_resources) {
                         var resource = File.new_for_path (
-                            Path.build_path (
-                                Path.DIR_SEPARATOR_S,
+                            Path.build_filename (
                                 this.mingw_path,
                                 item
                             )
                         );
                         var target = File.new_for_path (
-                            Path.build_path (
-                                Path.DIR_SEPARATOR_S,
+                            Path.build_filename (
                                 this.outdir,
                                 item
                             )
@@ -158,15 +156,13 @@ namespace GtkPacker {
                 // Ignore statically linked files and xml or dtd that have compiled
                 foreach (unowned var item in gtk_resources) {
                     var resource = File.new_for_path (
-                        Path.build_path (
-                            Path.DIR_SEPARATOR_S,
+                        Path.build_filename (
                             this.mingw_path,
                             item
                         )
                     );
                     var target = File.new_for_path (
-                        Path.build_path (
-                            Path.DIR_SEPARATOR_S,
+                        Path.build_filename (
                             this.outdir,
                             item
                         )
@@ -207,16 +203,14 @@ namespace GtkPacker {
          */
         inline void copy_locale () throws Error {
             var resource = File.new_for_path (
-                Path.build_path (
-                    Path.DIR_SEPARATOR_S,
+                Path.build_filename (
                     this.mingw_path,
                     "share",
                     "locale"
                 )
             );
             var target = File.new_for_path (
-                Path.build_path (
-                    Path.DIR_SEPARATOR_S,
+                Path.build_filename (
                     this.outdir,
                     "share",
                     "locale"
